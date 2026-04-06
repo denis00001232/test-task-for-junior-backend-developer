@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"time"
 
 	taskdomain "example.com/taskservice/internal/domain/task"
 )
@@ -23,13 +24,23 @@ type Usecase interface {
 }
 
 type CreateInput struct {
-	Title       string
-	Description string
-	Status      taskdomain.Status
+	Title           string
+	Description     string
+	Status          taskdomain.Status
+	PeriodicityType taskdomain.PeriodicityType `json:"periodicity_type"`
+	DailyInterval   int                        `json:"daily_interval,omitempty"`
+	MonthlyDays     []int                      `json:"monthly_days,omitempty"`
+	SpecificDates   []time.Time                `json:"specific_dates,omitempty"`
+	OddEven         taskdomain.OddEvenType     `json:"odd_even_type,omitempty"`
 }
 
 type UpdateInput struct {
-	Title       string
-	Description string
-	Status      taskdomain.Status
+	Title           string
+	Description     string
+	Status          taskdomain.Status
+	PeriodicityType taskdomain.PeriodicityType `json:"periodicity_type"`
+	DailyInterval   int                        `json:"daily_interval,omitempty"`
+	MonthlyDays     []int                      `json:"monthly_days,omitempty"`
+	SpecificDates   []time.Time                `json:"specific_dates,omitempty"`
+	OddEven         taskdomain.OddEvenType     `json:"odd_even_type,omitempty"`
 }

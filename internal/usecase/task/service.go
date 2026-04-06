@@ -28,10 +28,16 @@ func (s *Service) Create(ctx context.Context, input CreateInput) (*taskdomain.Ta
 	}
 
 	model := &taskdomain.Task{
-		Title:       normalized.Title,
-		Description: normalized.Description,
-		Status:      normalized.Status,
+		Title:           normalized.Title,
+		Description:     normalized.Description,
+		Status:          normalized.Status,
+		PeriodicityType: normalized.PeriodicityType,
+		DailyInterval:   normalized.DailyInterval,
+		MonthlyDays:     normalized.MonthlyDays,
+		SpecificDates:   normalized.SpecificDates,
+		OddEven:         normalized.OddEven,
 	}
+
 	now := s.now()
 	model.CreatedAt = now
 	model.UpdatedAt = now
@@ -63,11 +69,16 @@ func (s *Service) Update(ctx context.Context, id int64, input UpdateInput) (*tas
 	}
 
 	model := &taskdomain.Task{
-		ID:          id,
-		Title:       normalized.Title,
-		Description: normalized.Description,
-		Status:      normalized.Status,
-		UpdatedAt:   s.now(),
+		ID:              id,
+		Title:           normalized.Title,
+		Description:     normalized.Description,
+		Status:          normalized.Status,
+		UpdatedAt:       s.now(),
+		PeriodicityType: normalized.PeriodicityType,
+		DailyInterval:   normalized.DailyInterval,
+		MonthlyDays:     normalized.MonthlyDays,
+		SpecificDates:   normalized.SpecificDates,
+		OddEven:         normalized.OddEven,
 	}
 
 	updated, err := s.repo.Update(ctx, model)
@@ -106,6 +117,18 @@ func validateCreateInput(input CreateInput) (CreateInput, error) {
 		return CreateInput{}, fmt.Errorf("%w: invalid status", ErrInvalidInput)
 	}
 
+	if !input.PeriodicityType.Valid() {
+		return CreateInput{}, fmt.Errorf("%w: invalid periodicity type", ErrInvalidInput)
+	}
+
+	if err := validatePeriodicityType(input.PeriodicityType,
+		input.DailyInterval,
+		input.MonthlyDays,
+		input.SpecificDates,
+		input.OddEven); err != nil {
+		return CreateInput{}, err
+	}
+
 	return input, nil
 }
 
@@ -121,5 +144,48 @@ func validateUpdateInput(input UpdateInput) (UpdateInput, error) {
 		return UpdateInput{}, fmt.Errorf("%w: invalid status", ErrInvalidInput)
 	}
 
+	if err := validatePeriodicityType(input.PeriodicityType,
+		input.DailyInterval,
+		input.MonthlyDays,
+		input.SpecificDates,
+		input.OddEven); err != nil {
+		return UpdateInput{}, err
+	}
+
 	return input, nil
+}
+
+func validatePeriodicityType(periodicityType taskdomain.PeriodicityType, dailyInterval int, monthlyDays []int, specificDates []time.Time, oddEven taskdomain.OddEvenType) error {
+	if !periodicityType.Valid() {
+		return fmt.Errorf("%w: invalid periodicity type", ErrInvalidInput)
+	}
+
+	switch periodicityType {
+	case taskdomain.DailyInterval:
+		if dailyInterval < 0 {
+			return fmt.Errorf("%w: daily interval must be positive", ErrInvalidInput)
+		}
+
+	case taskdomain.MonthlyDays:
+		if len(monthlyDays) == 0 {
+			return fmt.Errorf("%w: monthly days is required", ErrInvalidInput)
+		}
+		for _, num := range monthlyDays {
+			if num < 1 || num > 31 {
+				return fmt.Errorf("%w: incorrect monthly day", ErrInvalidInput)
+			}
+		}
+
+	case taskdomain.SpecificDates:
+		if len(specificDates) == 0 {
+			return fmt.Errorf("%w: specific days is required", ErrInvalidInput)
+		}
+
+	case taskdomain.OddEven:
+		if !oddEven.Valid() {
+			return fmt.Errorf("%w: invalid odd even", ErrInvalidInput)
+		}
+	}
+
+	return nil
 }

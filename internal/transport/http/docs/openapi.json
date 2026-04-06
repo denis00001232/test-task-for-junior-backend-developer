@@ -169,6 +169,38 @@
             "type": "string",
             "enum": ["new", "in_progress", "done"],
             "example": "new"
+          },
+          "periodicity_type": {
+            "type": "string",
+            "enum": ["daily interval", "monthly days", "specific dates", "odd even"],
+            "example": "daily interval"
+          },
+          "daily_interval": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 3
+          },
+          "monthly_days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 31
+            },
+            "example": [1, 15, 30]
+          },
+          "specific_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": ["2026-04-01T00:00:00Z", "2026-04-15T00:00:00Z"]
+          },
+          "odd_even_type": {
+            "type": "string",
+            "enum": ["odd", "even"],
+            "example": "odd"
           }
         }
       },
@@ -188,6 +220,38 @@
             "type": "string",
             "enum": ["new", "in_progress", "done"],
             "example": "in_progress"
+          },
+          "periodicity_type": {
+            "type": "string",
+            "enum": ["daily interval", "monthly days", "specific dates", "odd even"],
+            "example": "daily interval"
+          },
+          "daily_interval": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 3
+          },
+          "monthly_days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 31
+            },
+            "example": [1, 15, 30]
+          },
+          "specific_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": ["2026-04-01T00:00:00Z", "2026-04-15T00:00:00Z"]
+          },
+          "odd_even_type": {
+            "type": "string",
+            "enum": ["odd", "even"],
+            "example": "odd"
           }
         }
       },
@@ -214,6 +278,38 @@
             "type": "string",
             "format": "date-time",
             "example": "2026-03-24T00:00:00Z"
+          },
+          "periodicity_type": {
+            "type": "string",
+            "enum": ["daily interval", "monthly days", "specific dates", "odd even"],
+            "example": "daily interval"
+          },
+          "daily_interval": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 3
+          },
+          "monthly_days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 31
+            },
+            "example": [1, 15, 30]
+          },
+          "specific_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": ["2026-04-01T00:00:00Z", "2026-04-15T00:00:00Z"]
+          },
+          "odd_even_type": {
+            "type": "string",
+            "enum": ["odd", "even"],
+            "example": "odd"
           }
         }
       },
